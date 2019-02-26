@@ -8,8 +8,8 @@ from library_backend.models.database.users_db_model import UsersDBModel
 class ReservationsDBModel(Base):
     __tablename__ = f'reservations'
 
-    book_id = Column(String, ForeignKey(BooksDBModel.book_id))
-    user_id = Column(String, ForeignKey(UsersDBModel.user_id))  # TODO: Research composed keys
+    book_id = Column(String, ForeignKey(BooksDBModel.book_id), primary_key=True)
+    user_id = Column(String, ForeignKey(UsersDBModel.user_id), primary_key=True)
     reservation_date = Column(String)
     reservation_expiration_date = Column(String)
 
