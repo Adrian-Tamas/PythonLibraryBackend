@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, Boolean
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+from library_backend import Base
 
 
 class BooksDBModel(Base):

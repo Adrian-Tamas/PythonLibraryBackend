@@ -1,15 +1,14 @@
+import os
 import uuid
 from functools import wraps
 
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from library_backend import logger
+from library_backend import logger, Base
 from library_backend.models.database.books_db_model import BooksDBModel
+from library_backend.models.database.reservations_db_model import ReservationsDBModel
 from library_backend.models.database.users_db_model import UsersDBModel
-
-Base = declarative_base()
 
 
 def check_session():
@@ -33,7 +32,7 @@ def check_session():
 class SQLiteDatabaseConnection:
 
     def __init__(self):
-        self.engine = create_engine("sqlite:///db.sqlite")
+        self.engine = create_engine("sqlite:///db.sqlite", echo=True)
         self.session = None
         self.connection_name = None
 
@@ -43,7 +42,9 @@ class SQLiteDatabaseConnection:
     @check_session()
     def create_tables_if_not_exists(self):
         try:
-            if not self.engine.dialect.has_table(self.engine, UsersDBModel.__tablename__):
+            if not (self.engine.dialect.has_table(self.engine, UsersDBModel.__tablename__)
+                    and self.engine.dialect.has_table(self.engine, BooksDBModel.__tablename__)
+                    and self.engine.dialect.has_table(self.engine, ReservationsDBModel.__tablename__)):
                 logger.info(f"Creating table {UsersDBModel.__tablename__}...")
                 try:
                     Base.metadata.create_all(self.engine)

@@ -1,10 +1,8 @@
 from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
 
+from library_backend import Base
 from library_backend.models.database.books_db_model import BooksDBModel
 from library_backend.models.database.users_db_model import UsersDBModel
-
-Base = declarative_base()
 
 
 class ReservationsDBModel(Base):
