@@ -17,4 +17,8 @@ class UsersDBModel(Base):
         self.user_last_name = fields["user_last_name"]
         self.user_email = fields["user_email"]
 
-
+    def __repr__(self): # TODO: check automatic repr generation
+        return f"User(user_id={self.user_id}," \
+            f" user_first_name= {self.user_first_name}," \
+            f" user_last_name={self.user_last_name}," \
+            f" user_email={self.user_email})"

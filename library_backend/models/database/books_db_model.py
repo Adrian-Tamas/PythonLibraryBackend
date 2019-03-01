@@ -17,3 +17,8 @@ class BooksDBModel(Base):
         self.book_author = fields["book_author"]
         self.book_is_reserved = fields.get("book_is_reserved", False)
 
+    def __repr__(self):
+        return f"Book(book_id={self.book_id}, " \
+            f"book_name={self.book_name}, " \
+            f"book_author={self.book_author}, " \
+            f"book_is_reserved={self.book_is_reserved})"
