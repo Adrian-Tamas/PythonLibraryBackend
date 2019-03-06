@@ -7,6 +7,7 @@ with db:
     # user1 = UsersDBModel(user_email="adrian.tamas@endava.com", user_first_name="Adrian", user_last_name="Tamas")
     # db.add_user(user1)
 
+    print("\n=========== User check ===========\n")
     users = db.get_all_users()
     print(f"All users: {users}")
 
@@ -19,8 +20,7 @@ with db:
     user = db.get_user_by_email(email="adi.tamas@endava.com")
     print(f"get user by email {user}")
 
-    # book2 = BooksDBModel(book_name="Nightflyers", book_author="George R.R. Martin")
-    # db.add_book(book2)
+    print("\n=========== Books check ===========\n")
 
     all_books = db.get_all_books()
     print(f"All Books {all_books}")
@@ -38,4 +38,9 @@ with db:
     book_by_partial_name = db.get_books_by_partial_author_name("R.R.")
     print(f"Book by partial name {book_by_partial_name}")
 
-    db.get_reserved_books()
+    print("\n=========== Reservations check ===========\n")
+    result = db.get_reserved_books()
+
+    for user, book in result:
+        print(f"User {user.user_first_name} {user.user_last_name} has reserved the book {book.book_name}"
+              f" written by {book.book_author}")

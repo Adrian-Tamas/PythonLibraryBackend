@@ -1,12 +1,14 @@
+import random
 import uuid
-from datetime import datetime
+from datetime import date
 from functools import wraps
-
+from faker import Faker
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from library_backend import logger, Base
 from library_backend.models.database.books_db_model import BooksDBModel
+from library_backend.models.database.mock_data import books, get_users_list
 from library_backend.models.database.reservations_db_model import ReservationsDBModel
 from library_backend.models.database.users_db_model import UsersDBModel
 
@@ -112,30 +114,42 @@ class SQLiteDatabaseConnection:
 
     @check_session()
     def get_reserved_books(self):
-        user, books = self.session.query(UsersDBModel, BooksDBModel)\
-            .join(UsersDBModel.user_id == ReservationsDBModel.user_id and BooksDBModel.book_id == BooksDBModel.book_id).all()
-        print("test")
-        return  #TODO: check multijoin
+        result = self.session.query(UsersDBModel, BooksDBModel)\
+            .join(ReservationsDBModel).filter(ReservationsDBModel.user_id == UsersDBModel.user_id)\
+            .filter(ReservationsDBModel.book_id == BooksDBModel.book_id).all()
+        return result
 
     @check_session()
     def add_some_data_if_does_not_exist(self):
         user1 = UsersDBModel(user_email="adi.tamas@endava.com", user_first_name="Adrian", user_last_name="Tamas")
         user2 = UsersDBModel(user_email="ion.ionescu@endava.com", user_first_name="Ion", user_last_name="Ionescu")
-        book1 = BooksDBModel(book_name="A song of ice and fire", book_author="George R.R. Martin")
+        users = get_users_list()
 
         nr_of_entries = self.session.query(UsersDBModel).count()
         if nr_of_entries is 0:
             self.add_user(user1)
             self.add_user(user2)
+            for user in users:
+                self.add_user(user)
 
         nr_of_entries = self.session.query(BooksDBModel).count()
         if nr_of_entries is 0:
-            self.add_book(book1)
+            for book in books:
+                book.book_is_reserved = True
+                self.add_book(book)
 
         nr_of_entries = self.session.query(ReservationsDBModel).count()
         if nr_of_entries is 0:
-            reservation = ReservationsDBModel(book_id=book1.book_id, user_id=user1.user_id, reservation_expiration_date= None, reservation_date=f"{datetime.now()}")
-            self.add_reservation(reservation)
+            fake = Faker()
+            start_date = date(year=2010, month=1, day=1)
+            for book in books:
+                user = random.choice(users)
+                fake_date = fake.date_between(start_date=start_date, end_date='+8y')
+                reservation = ReservationsDBModel(book_id=book.book_id,
+                                                  user_id=user.user_id,
+                                                  reservation_expiration_date=None,
+                                                  reservation_date=f"{fake_date}")
+                self.add_reservation(reservation)
 
     def __exit__(self, exc_type, exc_value, traceback):
         if exc_type:
