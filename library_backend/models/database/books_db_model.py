@@ -1,3 +1,5 @@
+import json
+
 from sqlalchemy import Column, String, Boolean
 
 from library_backend import Base
@@ -19,7 +21,4 @@ class BooksDBModel(Base, SQLAlchemySerializer):
         self.book_is_reserved = fields.get("book_is_reserved", False)
 
     def __repr__(self):
-        return f"Book(book_id={self.book_id}, " \
-            f"book_name={self.book_name}, " \
-            f"book_author={self.book_author}, " \
-            f"book_is_reserved={self.book_is_reserved})"
+        return f"{json.dumps(self.serialize())}"

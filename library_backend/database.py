@@ -27,7 +27,9 @@ def check_session():
             if not instance.session:
                 raise AttributeError('No session. Please use context manager.')
             return callable_func(instance, *args, **kwargs)
+
         return decor_inner
+
     return check_session_wrapper
 
 
@@ -81,13 +83,13 @@ class SQLiteDatabaseConnection:
 
     @check_session()
     def get_users_by_first_and_last_name(self, first_name, last_name):
-        return self.session.query(UsersDBModel)\
+        return self.session.query(UsersDBModel) \
             .filter(UsersDBModel.user_first_name == first_name,
                     UsersDBModel.user_last_name == last_name).all()
 
     @check_session()
     def get_users_by_id(self, user_id):
-        return self.session.query(UsersDBModel)\
+        return self.session.query(UsersDBModel) \
             .filter(UsersDBModel.user_id == user_id).one_or_none()
 
     @check_session()
@@ -103,7 +105,7 @@ class SQLiteDatabaseConnection:
         return self.session.query(BooksDBModel).filter(BooksDBModel.book_id == book_id).one_or_none()
 
     @check_session()
-    def get_books_by_name(self, name):
+    def get_book_by_name(self, name):
         return self.session.query(BooksDBModel).filter(BooksDBModel.book_name == name).one_or_none()
 
     @check_session()
@@ -112,44 +114,83 @@ class SQLiteDatabaseConnection:
 
     @check_session()
     def get_book_by_author_and_name(self, author, name):
-        return self.session.query(BooksDBModel)\
+        return self.session.query(BooksDBModel) \
             .filter(BooksDBModel.book_author == author,
                     BooksDBModel.book_name == name).one_or_none()
 
     @check_session()
     def get_books_by_partial_author_name(self, partial_name):
         return self.session.query(BooksDBModel) \
-                   .filter(BooksDBModel.book_author.ilike(f'%{partial_name}%')).all()
+            .filter(BooksDBModel.book_author.ilike(f'%{partial_name}%')).all()
 
     @check_session()
     def get_reserved_books(self):
-        result = self.session.query(UsersDBModel, BooksDBModel)\
+        result = self.session.query(UsersDBModel, BooksDBModel) \
             .join(ReservationsDBModel).join(BooksDBModel).all()
         return result
 
     @check_session()
     def get_full_reserved_books_info(self):
-        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel)\
+        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel) \
             .join(ReservationsDBModel).join(BooksDBModel).order_by(UsersDBModel.user_first_name).all()
         return result
 
     @check_session()
     def get_reserved_books_by_user_id_and_book_id(self, user_id, book_id):
-        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel)\
-            .join(ReservationsDBModel).join(BooksDBModel).filter(UsersDBModel.user_id == user_id and BooksDBModel.book_id == book_id).one_or_none()
+        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel) \
+            .join(ReservationsDBModel).join(BooksDBModel).filter(
+            UsersDBModel.user_id == user_id).filter(BooksDBModel.book_id == book_id).one_or_none()
         return result
 
     @check_session()
-    def update_user(self, user_id, user):
-        row = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).update({"user_first_name": user.user_first_name,
-                                                                                               "user_last_name": user.user_last_name,
-                                                                                               "user_email": user.user_email})
-        return row
+    def update_user_by_values(self, user_id, user):
+        updated_rows = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).update(
+            {"user_first_name": user.user_first_name,
+             "user_last_name": user.user_last_name,
+             "user_email": user.user_email})
+        return updated_rows
 
     @check_session()
-    def update_user_with_entity(self, user_id, user):
-        row = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).update(user.serialize())
-        return row
+    def update_user(self, user_id, user):
+        updated_rows = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).update(user.serialize())
+        return updated_rows
+
+    @check_session()
+    def update_book(self, book_id, book):
+        updated_rows = self.session.query(BooksDBModel).filter(BooksDBModel.book_id == book_id).update(book.serialize())
+        return updated_rows
+
+    @check_session()
+    def update_reservation(self, user_id, book_id, reservation):
+        updated_rows = self.session.query(ReservationsDBModel) \
+            .filter(ReservationsDBModel.book_id == book_id) \
+            .filter(ReservationsDBModel.user_id == user_id).update(reservation.serialize())
+        return updated_rows
+
+    @check_session()
+    def update_reservation_for_user(self, user_id, reservation):
+        updated_rows = self.session.query(ReservationsDBModel) \
+            .filter(ReservationsDBModel.user_id == user_id) \
+            .update({"reservation_date": reservation.reservation_date,
+                     "reservation_expiration_date": reservation.reservation_expiration_date})
+        return updated_rows
+
+    @check_session()
+    def delete_user_by_id(self, user_id):
+        deleted_rows = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).delete()
+        return deleted_rows
+
+    @check_session()
+    def delete_book_by_id(self, book_id):
+        deleted_rows = self.session.query(BooksDBModel).filter(BooksDBModel.book_id == book_id).delete()
+        return deleted_rows
+
+    @check_session()
+    def delete_reservation_by_user_and_book_id(self, user_id, book_id):
+        deleted_rows = self.session.query(ReservationsDBModel)\
+            .filter(ReservationsDBModel.book_id == book_id)\
+            .filter(ReservationsDBModel.user_id == user_id).delete()
+        return deleted_rows
 
     @check_session()
     def add_some_data_if_does_not_exist(self):

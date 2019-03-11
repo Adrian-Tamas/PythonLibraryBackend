@@ -1,3 +1,4 @@
+import json
 from sqlalchemy import Column, String, ForeignKey
 
 from library_backend import Base
@@ -10,7 +11,7 @@ class ReservationsDBModel(Base, SQLAlchemySerializer):
     __tablename__ = f'reservations'
 
     book_id = Column(String, ForeignKey(BooksDBModel.book_id), primary_key=True)
-    user_id = Column(String, ForeignKey(UsersDBModel.user_id), primary_key=True)
+    user_id = Column(String, ForeignKey(UsersDBModel.user_id, ondelete="RESTRICT"), primary_key=True)  # TODO: check delete mode
     reservation_date = Column(String)
     reservation_expiration_date = Column(String)
 
@@ -19,3 +20,6 @@ class ReservationsDBModel(Base, SQLAlchemySerializer):
         self.user_id = fields["user_id"]
         self.reservation_date = fields["reservation_date"]
         self.reservation_expiration_date = fields.get("reservation_expiration_date")
+
+    def __repr__(self):
+        return f"{json.dumps(self.serialize())}"
