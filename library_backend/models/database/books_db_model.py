@@ -1,9 +1,10 @@
 from sqlalchemy import Column, String, Boolean
 
 from library_backend import Base
+from library_backend.models.database.sqlalchemy_serializer import SQLAlchemySerializer
 
 
-class BooksDBModel(Base):
+class BooksDBModel(Base, SQLAlchemySerializer):
     __tablename__ = f'books'
 
     book_id = Column(String, primary_key=True)

@@ -2,10 +2,11 @@ from sqlalchemy import Column, String, ForeignKey
 
 from library_backend import Base
 from library_backend.models.database.books_db_model import BooksDBModel
+from library_backend.models.database.sqlalchemy_serializer import SQLAlchemySerializer
 from library_backend.models.database.users_db_model import UsersDBModel
 
 
-class ReservationsDBModel(Base):
+class ReservationsDBModel(Base, SQLAlchemySerializer):
     __tablename__ = f'reservations'
 
     book_id = Column(String, ForeignKey(BooksDBModel.book_id), primary_key=True)

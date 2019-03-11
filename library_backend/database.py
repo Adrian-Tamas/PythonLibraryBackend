@@ -86,6 +86,11 @@ class SQLiteDatabaseConnection:
                     UsersDBModel.user_last_name == last_name).all()
 
     @check_session()
+    def get_users_by_id(self, user_id):
+        return self.session.query(UsersDBModel)\
+            .filter(UsersDBModel.user_id == user_id).one_or_none()
+
+    @check_session()
     def get_user_by_email(self, email):
         return self.session.query(UsersDBModel).filter(UsersDBModel.user_email == email).one_or_none()
 
@@ -94,8 +99,12 @@ class SQLiteDatabaseConnection:
         return self.session.query(BooksDBModel).all()
 
     @check_session()
+    def get_book_by_id(self, book_id):
+        return self.session.query(BooksDBModel).filter(BooksDBModel.book_id == book_id).one_or_none()
+
+    @check_session()
     def get_books_by_name(self, name):
-        return self.session.query(BooksDBModel).filter(BooksDBModel.book_name == name).all()
+        return self.session.query(BooksDBModel).filter(BooksDBModel.book_name == name).one_or_none()
 
     @check_session()
     def get_books_by_author(self, author):
@@ -115,9 +124,32 @@ class SQLiteDatabaseConnection:
     @check_session()
     def get_reserved_books(self):
         result = self.session.query(UsersDBModel, BooksDBModel)\
-            .join(ReservationsDBModel).filter(ReservationsDBModel.user_id == UsersDBModel.user_id)\
-            .filter(ReservationsDBModel.book_id == BooksDBModel.book_id).all()
+            .join(ReservationsDBModel).join(BooksDBModel).all()
         return result
+
+    @check_session()
+    def get_full_reserved_books_info(self):
+        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel)\
+            .join(ReservationsDBModel).join(BooksDBModel).order_by(UsersDBModel.user_first_name).all()
+        return result
+
+    @check_session()
+    def get_reserved_books_by_user_id_and_book_id(self, user_id, book_id):
+        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel)\
+            .join(ReservationsDBModel).join(BooksDBModel).filter(UsersDBModel.user_id == user_id and BooksDBModel.book_id == book_id).one_or_none()
+        return result
+
+    @check_session()
+    def update_user(self, user_id, user):
+        row = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).update({"user_first_name": user.user_first_name,
+                                                                                               "user_last_name": user.user_last_name,
+                                                                                               "user_email": user.user_email})
+        return row
+
+    @check_session()
+    def update_user_with_entity(self, user_id, user):
+        row = self.session.query(UsersDBModel).filter(UsersDBModel.user_id == user_id).update(user.serialize())
+        return row
 
     @check_session()
     def add_some_data_if_does_not_exist(self):
@@ -142,9 +174,10 @@ class SQLiteDatabaseConnection:
         if nr_of_entries is 0:
             fake = Faker()
             start_date = date(year=2010, month=1, day=1)
+            end_date = date(year=2019, month=1, day=1)
             for book in books:
                 user = random.choice(users)
-                fake_date = fake.date_between(start_date=start_date, end_date='+8y')
+                fake_date = fake.date_between(start_date=start_date, end_date=end_date)
                 reservation = ReservationsDBModel(book_id=book.book_id,
                                                   user_id=user.user_id,
                                                   reservation_expiration_date=None,

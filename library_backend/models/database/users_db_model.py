@@ -1,9 +1,10 @@
 from sqlalchemy import Column, String
 
 from library_backend import Base
+from library_backend.models.database.sqlalchemy_serializer import SQLAlchemySerializer
 
 
-class UsersDBModel(Base):
+class UsersDBModel(Base, SQLAlchemySerializer):
     __tablename__ = f'users'
 
     user_id = Column(String, primary_key=True)
