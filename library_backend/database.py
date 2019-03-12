@@ -88,7 +88,7 @@ class SQLiteDatabaseConnection:
                     UsersDBModel.user_last_name == last_name).all()
 
     @check_session()
-    def get_users_by_id(self, user_id):
+    def get_user_by_id(self, user_id):
         return self.session.query(UsersDBModel) \
             .filter(UsersDBModel.user_id == user_id).one_or_none()
 
@@ -136,7 +136,7 @@ class SQLiteDatabaseConnection:
         return result
 
     @check_session()
-    def get_reserved_books_by_user_id_and_book_id(self, user_id, book_id):
+    def get_reserved_book_by_user_id_and_book_id(self, user_id, book_id):
         result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel) \
             .join(ReservationsDBModel).join(BooksDBModel).filter(
             UsersDBModel.user_id == user_id).filter(BooksDBModel.book_id == book_id).one_or_none()

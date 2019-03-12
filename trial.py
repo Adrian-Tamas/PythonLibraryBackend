@@ -23,7 +23,7 @@ with db:
     user = db.get_user_by_email(email="adi.tamas@endava.com")
     print(f"get user by email {user}")
 
-    user_by_id = db.get_users_by_id(user.user_id)
+    user_by_id = db.get_user_by_id(user.user_id)
     print(f"User by id {user_by_id}")
 
     print("\n=========== Books check ===========\n")
@@ -62,7 +62,7 @@ with db:
 
     print("\n=========== Reservation by user_id and book_id ===========\n")
     user1, book1, reservation1 = result[0]
-    user, book, reservation = db.get_reserved_books_by_user_id_and_book_id(user1.user_id, book1.book_id)
+    user, book, reservation = db.get_reserved_book_by_user_id_and_book_id(user1.user_id, book1.book_id)
     print(f"User {user.user_first_name} {user.user_last_name} has reserved the book {book.book_name}"
           f" written by {book.book_author} and was reserved on {reservation.reservation_date}")
 
@@ -73,7 +73,7 @@ with db:
 
     row = db.update_user_by_values(user.user_id, user)
     print(f"Nr of edited rows: {row}")
-    new_user = db.get_users_by_id(user.user_id)
+    new_user = db.get_user_by_id(user.user_id)
     print(f"Edited User: {new_user}")
 
     print("\n=========== Serializers ===========\n")
@@ -84,7 +84,7 @@ with db:
     print(f"Book by exact name {book_by_name}")
 
     user1, book1, reservation1 = result[0]
-    user, book, reservation = db.get_reserved_books_by_user_id_and_book_id(user1.user_id, book1.book_id)
+    user, book, reservation = db.get_reserved_book_by_user_id_and_book_id(user1.user_id, book1.book_id)
     print(f"User {user} has reserved the book {book}")
 
     print("\n=========== Update user ===========\n")
@@ -94,7 +94,7 @@ with db:
 
     row = db.update_user(user.user_id, user)
     print(f"Nr of edited rows: {row}")
-    new_user = db.get_users_by_id(user.user_id)
+    new_user = db.get_user_by_id(user.user_id)
     print(f"Edited User: {new_user}")
 
     print("\n=========== Update book ===========\n")
@@ -115,11 +115,11 @@ with db:
                                       reservation_date="soem",
                                       reservation_expiration_date=None)
     db.add_reservation(reservation)
-    user, book, reservation = db.get_reserved_books_by_user_id_and_book_id(user.user_id, book_by_name.book_id)
+    user, book, reservation = db.get_reserved_book_by_user_id_and_book_id(user.user_id, book_by_name.book_id)
     print(f"User {json.dumps(users[0].serialize())} has reserved the book {json.dumps(book.serialize())}")
     rows = db.delete_user_by_id(user.user_id)
     print(f"Nr of edited rows: {rows}")
-    new_user = db.get_users_by_id(user.user_id)
+    new_user = db.get_user_by_id(user.user_id)
     if not new_user:
         print("user not found")
     else:
