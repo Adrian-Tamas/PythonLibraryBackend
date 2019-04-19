@@ -83,3 +83,38 @@ class BookApi:
     @handle_request()
     def delete_book(self, book_id):
         return f"Book with id {book_id} has been deleted"
+
+
+class ReservationApi:
+
+    @handle_request()
+    def get_reservations(self):
+        return [{"user_id": "3", "book_id": "5"}]
+
+    @handle_request()
+    def add_reservation(self, reservation):
+        return {"reservation": reservation}
+
+    @handle_request()
+    def get_reservation_by_user_id(self, user_id):
+        return {"user_id": user_id, "reservation": "1"}
+
+    @handle_request()
+    def get_reservation_by_book_id(self, book_id):
+        return {"book_id": book_id, "reservation": "1"}
+
+    @handle_request()
+    def update_reservation(self, user_id, book_id):
+        return {"user_id": user_id, "book_id": book_id}
+
+    @handle_request()
+    def delete_reservation(self, user_id, book_id):
+        return f"Reservation was deleted for {user_id} and {book_id}"
+
+    @handle_request()
+    def delete_all_reservations_for_users(self, user_id):
+        return f"all reservations were deleted for user: {user_id}"
+
+    @handle_request()
+    def delete_all_reservations_for_book(self, book_id):
+        return f"all reservations were deleted for book: {book_id}"

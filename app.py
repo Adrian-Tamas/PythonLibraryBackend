@@ -2,10 +2,10 @@ import logging
 
 from flask import Flask, Response, request
 
-from library_backend.api import UserApi, BookApi
+from library_backend.api import UserApi, BookApi, ReservationApi
 from library_backend.database import SQLiteDatabaseConnection
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 app = Flask("LibraryBackend")
 
@@ -87,6 +87,63 @@ def edit_book(book_id):
 def delete_book(book_id):
     book_api = BookApi()
     response = book_api.delete_book(book_id)
+    return app_response(response)
+
+
+@app.route("/reservations", methods=["GET"])
+def get_reservations():
+    reservation_api = ReservationApi()
+    response = reservation_api.get_reservations()
+    return app_response(response)
+
+
+@app.route("/reservations", methods=["POST"])
+def add_reservation():
+    reservation = request.get_json()
+    reservation_api = ReservationApi()
+    response = reservation_api.add_reservation(reservation)
+    return app_response(response)
+
+
+@app.route("/reservations/user/<user_id>", methods=["GET"])
+def get_reservation_for_user(user_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.get_reservation_by_user_id(user_id)
+    return app_response(response)
+
+
+@app.route("/reservations/book/<book_id>", methods=["GET"])
+def get_reservation_for_book(book_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.get_reservation_by_book_id(book_id)
+    return app_response(response)
+
+
+@app.route("/reservations/user/<user_id>/book/<book_id>", methods=["PUT"])
+def update_reservation_for_user_and_book(user_id, book_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.update_reservation(user_id, book_id)
+    return app_response(response)
+
+
+@app.route("/reservations/user/<user_id>/book/<book_id>", methods=["DELETE"])
+def delete_reservation_for_user_and_book(user_id, book_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.delete_reservation(user_id, book_id)
+    return app_response(response)
+
+
+@app.route("/reservations/user/<user_id>", methods=["DELETE"])
+def delete_all_reservations_for_user(user_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.delete_all_reservations_for_users(user_id)
+    return app_response(response)
+
+
+@app.route("/reservations/book/<book_id>", methods=["DELETE"])
+def delete_all_reservations_for_book(book_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.delete_all_reservations_for_book(book_id)
     return app_response(response)
 
 
