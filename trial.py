@@ -7,7 +7,8 @@ from library_backend.models.database.users_db_model import UsersDBModel
 
 db = SQLiteDatabaseConnection()
 with db:
-    # user1 = UsersDBModel(user_email="adrian.tamas@endava.com", user_first_name="Adrian", user_last_name="Tamas")
+    # user1 = UsersDdb = SQLiteDatabaseConnection()
+    # with db:BModel(user_email="adrian.tamas@endava.com", user_first_name="Adrian", user_last_name="Tamas")
     # db.add_user(user1)
 
     print("\n=========== User check ===========\n")

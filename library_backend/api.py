@@ -1,8 +1,9 @@
 import json
 from functools import wraps
 
-from library_backend.exception import InvalidUser, InvalidBook
+from library_backend.exceptions import *
 from library_backend.service import UserService
+from library_backend.validators import validate_request_for_user
 
 
 def response(message, status_code):
@@ -23,7 +24,7 @@ def handle_request():
         def wrapper(*args, **kwargs):
             try:
                 return response(f(*args, *kwargs), 200)
-            except (InvalidUser, InvalidBook, ValueError) as e:
+            except (InvalidUser, InvalidBook, ValueError, UserAlreadyExists, ResourceNotFound) as e:
                 return response(str(e), 400)
             except KeyError as e:
                 return response(f'{str(e)} is required', 400)
@@ -36,29 +37,35 @@ def handle_request():
 class UserApi:
 
     @handle_request()
+    @validate_request_for_user
     def create_user(self, user):
-        if user["a"] == "a":
-            raise InvalidUser("user with a in value")
-        userService = UserService()
-        userService.create_user(user=user)
+        user_service = UserService()
+        user = user_service.create_user(user_dict=user)
         return user
 
     @handle_request()
     def list_users(self):
-        return [{"my_user": "user"}]
+        user_service = UserService()
+        user_list = user_service.list_users()
+        return user_list
 
     @handle_request()
     def delete_user(self, user_id):
-        return f"succesfully deleted user {user_id}"
+        user_service = UserService()
+        user_service.delete_user(user_id)
+        return f"Successfully deleted user {user_id}"
 
     @handle_request()
     def update_user(self, user_id, new_user):
-        new_user["my_new_el"] = "new"
+        user_service = UserService()
+        new_user = user_service.update_user(user_id, new_user)
         return new_user
 
     @handle_request()
     def get_user(self, user_id):
-        return {"my_user": "user"}
+        user_service = UserService()
+        user = user_service.get_user(user_id)
+        return user
 
 
 class BookApi:
