@@ -106,7 +106,7 @@ class SQLiteDatabaseConnection:
 
     @check_session()
     def get_book_by_name(self, name):
-        return self.session.query(BooksDBModel).filter(BooksDBModel.name == name).one_or_none()
+        return self.session.query(BooksDBModel).filter(BooksDBModel.name == name).all()
 
     @check_session()
     def get_books_by_author(self, author):

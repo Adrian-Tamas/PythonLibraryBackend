@@ -2,7 +2,7 @@ import json
 from functools import wraps
 
 from library_backend.exceptions import *
-from library_backend.service import UserService
+from library_backend.service import UserService, BookService
 from library_backend.validators import validate_request_for_user
 
 
@@ -24,7 +24,12 @@ def handle_request():
         def wrapper(*args, **kwargs):
             try:
                 return response(f(*args, *kwargs), 200)
-            except (InvalidUser, InvalidBook, ValueError, UserAlreadyExists, ResourceNotFound) as e:
+            except (InvalidUser,
+                    InvalidBook,
+                    ValueError,
+                    UserAlreadyExists,
+                    ResourceNotFound,
+                    BookAlreadyExists) as e:
                 return response(str(e), 400)
             except KeyError as e:
                 return response(f'{str(e)} is required', 400)
@@ -72,23 +77,28 @@ class BookApi:
 
     @handle_request()
     def get_books(self):
-        return [{"My_books": "books"}]
+        book_service = BookService()
+        return book_service.list_books()
 
     @handle_request()
     def create_book(self, book):
-        return {"new_book": book}
+        book_service = BookService()
+        return book_service.create_book(book)
 
     @handle_request()
     def get_book(self, book_id):
-        return {"one_book": book_id}
+        book_service = BookService()
+        return book_service.get_book(book_id)
 
     @handle_request()
     def update_book(self, book_id, new_book):
-        new_book["new_field"] = "new"
-        return new_book
+        book_service = BookService()
+        return book_service.edit_book(book_id, new_book)
 
     @handle_request()
     def delete_book(self, book_id):
+        book_service = BookService()
+        book_service.delete_book(book_id)
         return f"Book with id {book_id} has been deleted"
 
 

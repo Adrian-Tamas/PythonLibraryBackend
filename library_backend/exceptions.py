@@ -10,12 +10,17 @@ class ResourceNotFound(Exception):
 
 class UserAlreadyExists(Exception):
     def __init__(self, value):
-        super().__init__(f" User with email: {value['email']} already exists")
+        super().__init__(f"User with email: {value['email']} already exists")
 
 
 class InvalidBook(Exception):
     def __init__(self, value):
         super().__init__(f"Invalid book {value}")
+
+
+class BookAlreadyExists(Exception):
+    def __init__(self, value):
+        super().__init__(f"Book with name: {value['name']} writen by author: {value['author']} already exists")
 
 
 class RequiredFieldException(ValueError):
