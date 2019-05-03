@@ -1,40 +1,39 @@
 from library_backend.models.database.books_db_model import BooksDBModel
 from library_backend.models.database.users_db_model import UsersDBModel
 
-books = [BooksDBModel(book_name="A song of ice and fire", book_author="George R.R. Martin"),
-         BooksDBModel(book_name="Nightflyers", book_author="George R.R. Martin"),
-         BooksDBModel(book_name="Horus Heresy: Horus Rising", book_author="Dan Abnett"),
-         BooksDBModel(book_name="Horus Heresy: False Gods", book_author="Graham McNeil"),
-         BooksDBModel(book_name="Horus Heresy: Galaxy In Flames", book_author="Ben Counter"),
-         BooksDBModel(book_name="Horus Heresy: The Flight of The Eisenstein", book_author="James Swallow"),
-         BooksDBModel(book_name="Horus Heresy: Fulgrim", book_author="Graham McNeil"),
-         BooksDBModel(book_name="Horus Heresy: Descent of Angels", book_author="Mitchell Scanlon"),
-         BooksDBModel(book_name="Horus Heresy: Legion", book_author="Dan Abnett"),
-         BooksDBModel(book_name="Horus Heresy: Battle for the Abyss", book_author="Ben Counter"),
-         BooksDBModel(book_name="Horus Heresy: Mechanicum", book_author="Graham McNeil"),
-         BooksDBModel(book_name="Horus Heresy: Tales of Heresy ",
-                      book_author="Nick Kyme and Lindsey Preistley"),
-         BooksDBModel(book_name="Horus Heresy: Fallen Angels", book_author="Mike Lee"),
-         BooksDBModel(book_name="Horus Heresy: A Thousand Sons", book_author="Graham McNeil"),
-         BooksDBModel(book_name="Horus Heresy: Nemesis", book_author="James Swallow"),
-         BooksDBModel(book_name="Horus Heresy: The First Heretic", book_author="Aaron Dembski-Bowden"),
-         BooksDBModel(book_name="Horus Heresy: Prospero Burns", book_author="Dan Abnett"),
-         BooksDBModel(book_name="Horus Heresy: Age Of Darkness", book_author="Christian Dunn"),
-         BooksDBModel(book_name="Horus Heresy: The Outcast Dead", book_author="Graham McNeill"),
-         BooksDBModel(book_name="Horus Heresy: Deliverance Lost", book_author="Gav Thorpe"),
-         BooksDBModel(book_name="Horus Heresy: Know No Fear", book_author="Dan Abnett"),
-         BooksDBModel(book_name="Horus Heresy: The Primarchs", book_author="Christian Dunn"),
-         BooksDBModel(book_name="Horus Heresy: Fear To Tread", book_author="James Swallow"),
-         BooksDBModel(book_name="Horus Heresy: Shadows Of Treachery",
-                      book_author="Christian Dunn and Nick Kyme"),
-         BooksDBModel(book_name="Horus Heresy: Angel Exterminatus", book_author="Graham McNeill"),
-         BooksDBModel(book_name="Horus Heresy: Betrayer", book_author="Aaron Dembski-Bowden"),
-         BooksDBModel(book_name="Horus Heresy: Mark Of Calth", book_author="Laurie Goulding"),
-         BooksDBModel(book_name="Horus Heresy: Vulkan Lives", book_author="Nick Kyme"),
-         BooksDBModel(book_name="Horus Heresy: The Unremembered Empire", book_author="Dan Abnett"),
-         BooksDBModel(book_name="Horus Heresy: Scars ", book_author="Chris Wraight"),
-         BooksDBModel(book_name="Horus Heresy: Vengeful Spirit", book_author="Graham McNeill"),
-         BooksDBModel(book_name="Horus Heresy: The Damnation of Pythos", book_author="David Annandale")]
+books = [BooksDBModel(name="A song of ice and fire", author="George R.R. Martin"),
+         BooksDBModel(name="Nightflyers", author="George R.R. Martin"),
+         BooksDBModel(name="Horus Heresy: Horus Rising", author="Dan Abnett"),
+         BooksDBModel(name="Horus Heresy: False Gods", author="Graham McNeil"),
+         BooksDBModel(name="Horus Heresy: Galaxy In Flames", author="Ben Counter"),
+         BooksDBModel(name="Horus Heresy: The Flight of The Eisenstein", author="James Swallow"),
+         BooksDBModel(name="Horus Heresy: Fulgrim", author="Graham McNeil"),
+         BooksDBModel(name="Horus Heresy: Descent of Angels", author="Mitchell Scanlon"),
+         BooksDBModel(name="Horus Heresy: Legion", author="Dan Abnett"),
+         BooksDBModel(name="Horus Heresy: Battle for the Abyss", author="Ben Counter"),
+         BooksDBModel(name="Horus Heresy: Mechanicum", author="Graham McNeil"),
+         BooksDBModel(name="Horus Heresy: Tales of Heresy ",author="Nick Kyme and Lindsey Preistley"),
+         BooksDBModel(name="Horus Heresy: Fallen Angels", author="Mike Lee"),
+         BooksDBModel(name="Horus Heresy: A Thousand Sons", author="Graham McNeil"),
+         BooksDBModel(name="Horus Heresy: Nemesis", author="James Swallow"),
+         BooksDBModel(name="Horus Heresy: The First Heretic", author="Aaron Dembski-Bowden"),
+         BooksDBModel(name="Horus Heresy: Prospero Burns", author="Dan Abnett"),
+         BooksDBModel(name="Horus Heresy: Age Of Darkness", author="Christian Dunn"),
+         BooksDBModel(name="Horus Heresy: The Outcast Dead", author="Graham McNeill"),
+         BooksDBModel(name="Horus Heresy: Deliverance Lost", author="Gav Thorpe"),
+         BooksDBModel(name="Horus Heresy: Know No Fear", author="Dan Abnett"),
+         BooksDBModel(name="Horus Heresy: The Primarchs", author="Christian Dunn"),
+         BooksDBModel(name="Horus Heresy: Fear To Tread", author="James Swallow"),
+         BooksDBModel(name="Horus Heresy: Shadows Of Treachery",
+                      author="Christian Dunn and Nick Kyme"),
+         BooksDBModel(name="Horus Heresy: Angel Exterminatus", author="Graham McNeill"),
+         BooksDBModel(name="Horus Heresy: Betrayer", author="Aaron Dembski-Bowden"),
+         BooksDBModel(name="Horus Heresy: Mark Of Calth", author="Laurie Goulding"),
+         BooksDBModel(name="Horus Heresy: Vulkan Lives", author="Nick Kyme"),
+         BooksDBModel(name="Horus Heresy: The Unremembered Empire", author="Dan Abnett"),
+         BooksDBModel(name="Horus Heresy: Scars ", author="Chris Wraight"),
+         BooksDBModel(name="Horus Heresy: Vengeful Spirit", author="Graham McNeill"),
+         BooksDBModel(name="Horus Heresy: The Damnation of Pythos", author="David Annandale")]
 
 users_dict = [
     {
@@ -544,8 +543,6 @@ def get_users_list():
     users = []
 
     for user_dict in users_dict:
-        users.append(UsersDBModel(user_email=user_dict["email"],
-                                  user_first_name=user_dict["first_name"],
-                                  user_last_name=user_dict["last_name"]))
+        users.append(UsersDBModel(**user_dict))
 
     return users

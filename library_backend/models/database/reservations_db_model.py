@@ -10,8 +10,8 @@ from library_backend.models.database.users_db_model import UsersDBModel
 class ReservationsDBModel(Base, SQLAlchemySerializer):
     __tablename__ = f'reservations'
 
-    book_id = Column(String, ForeignKey(BooksDBModel.book_id), primary_key=True)
-    user_id = Column(String, ForeignKey(UsersDBModel.user_id, ondelete="RESTRICT"), primary_key=True)  # TODO: check delete mode
+    book_id = Column(String, ForeignKey(BooksDBModel.id), primary_key=True)
+    user_id = Column(String, ForeignKey(UsersDBModel.id, ondelete="RESTRICT"), primary_key=True)
     reservation_date = Column(String)
     reservation_expiration_date = Column(String)
 

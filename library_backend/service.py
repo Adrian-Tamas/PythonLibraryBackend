@@ -10,12 +10,10 @@ class UserService:
         with db:
             if db.get_user_by_email(user_dict["email"]):
                 raise UserAlreadyExists(user_dict)
-        user_model = UsersDBModel(user_first_name=user_dict["first_name"],
-                                  user_last_name=user_dict["last_name"],
-                                  user_email=user_dict["email"])
+        user_model = UsersDBModel(**user_dict)
         with db:
             db.add_user(user_model)
-            user_dict = db.get_user_by_email(user_model.user_email).serialize()
+            user_dict = db.get_user_by_email(user_model.email).serialize()
         return user_dict
 
     def list_users(self):
@@ -43,13 +41,10 @@ class UserService:
 
     def update_user(self, user_id, new_user):
         old_user = self.get_user(user_id)
-        if not old_user["user_email"] == new_user["email"]:
+        if not old_user["email"] == new_user["email"]:
             raise InvalidFieldException("email")
         db = SQLiteDatabaseConnection()
-        user_model = UsersDBModel(user_id=user_id,
-                                  user_first_name=new_user["first_name"],
-                                  user_last_name=new_user["last_name"],
-                                  user_email=new_user["email"])
+        user_model = UsersDBModel(id=user_id, **new_user)
         with db:
             rows = db.update_user(user_id, user_model)
         user = self.get_user(user_id)
