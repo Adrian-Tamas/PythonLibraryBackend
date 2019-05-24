@@ -32,7 +32,7 @@ with db:
     all_books = db.get_all_books()
     print(f"All Books {all_books}")
 
-    book_by_name = db.get_book_by_name("Nightflyers")
+    book_by_name = db.get_book_by_partial_name("Nightflyers")
     print(f"Book by exact name {book_by_name}")
 
     book_by_author = db.get_books_by_author("George R.R. Martin")
@@ -45,7 +45,7 @@ with db:
     book_by_partial_name = db.get_books_by_partial_author_name("R.R.")
     print(f"Book by partial name {book_by_partial_name}")
 
-    book_by_book_id = db.get_book_by_id(book_by_name.id)
+    book_by_book_id = db.get_book_by_id(book_by_name[0].id)
     print(f"Book by id {book_by_book_id}")
 
     print("\n=========== Reservations check ===========\n")
@@ -81,7 +81,7 @@ with db:
     users1 = db.get_users_by_first_and_last_name(first_name="Adrian", last_name="Tamas")
     print(f"List of users by name {UsersDBModel.serialize_list(users1)}")
 
-    book_by_name = db.get_book_by_name("Nightflyers")
+    book_by_name = db.get_book_by_partial_name("Nightflyers")
     print(f"Book by exact name {book_by_name}")
 
     user1, book1, reservation1 = result[0]
@@ -99,18 +99,17 @@ with db:
     print(f"Edited User: {new_user}")
 
     print("\n=========== Update book ===========\n")
-    book_by_name = db.get_book_by_name("Nightflyers")
-    book_by_name.book_is_reserved = False
+    book_by_name = db.get_book_by_partial_name("Nightflyers")[0]
     row = db.update_book(book_by_name.id, book_by_name)
     print(f"Nr of edited rows: {row}")
-    book_by_name = db.get_book_by_name(book_by_name.name)
+    book_by_name = db.get_book_by_partial_name(book_by_name.name)
     print(f"Edited User: {book_by_name}")
 
     print("\n=========== Delete user ===========\n")
     user = UsersDBModel(email="a.tamas@endava.com", first_name="Adrian", last_name="Tamas")
     db.add_user(user)
     user = db.get_user_by_email(user.email)
-    book_by_name = db.get_book_by_name("Nightflyers")
+    book_by_name = db.get_book_by_partial_name("Nightflyers")[0]
     reservation = ReservationsDBModel(user_id=user.id,
                                       book_id=book_by_name.id,
                                       reservation_date="soem",

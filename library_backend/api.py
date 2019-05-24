@@ -2,7 +2,7 @@ import json
 from functools import wraps
 
 from library_backend.exceptions import *
-from library_backend.service import UserService, BookService
+from library_backend.service import UserService, BookService, ReservationService
 from library_backend.validators import validate_request_for_user
 
 
@@ -23,13 +23,15 @@ def handle_request():
         @wraps(f)
         def wrapper(*args, **kwargs):
             try:
-                return response(f(*args, *kwargs), 200)
+                return response(f(*args, **kwargs), 200)
             except (InvalidUser,
                     InvalidBook,
                     ValueError,
                     UserAlreadyExists,
                     ResourceNotFound,
-                    BookAlreadyExists) as e:
+                    BookAlreadyExists,
+                    ReservationAlreadyExists,
+                    ReservationIsInvalid) as e:
                 return response(str(e), 400)
             except KeyError as e:
                 return response(f'{str(e)} is required', 400)
@@ -101,37 +103,59 @@ class BookApi:
         book_service.delete_book(book_id)
         return f"Book with id {book_id} has been deleted"
 
+    @handle_request()
+    def get_books_by_name(self, book_name):
+        book_service = BookService()
+        return book_service.get_book_by_partial_name(book_name)
+
+    @handle_request()
+    def get_books_by_author(self, author_name):
+        book_service = BookService()
+        return book_service.get_book_by_partial_author_name(author_name)
+
 
 class ReservationApi:
 
     @handle_request()
     def get_reservations(self):
-        return [{"user_id": "3", "book_id": "5"}]
+        reservation_service = ReservationService()
+        return reservation_service.list_reservations()
 
     @handle_request()
     def add_reservation(self, reservation):
-        return {"reservation": reservation}
+        reservation_service = ReservationService()
+        return reservation_service.add_reservation(reservation)
 
     @handle_request()
     def get_reservation_by_user_id(self, user_id):
-        return {"user_id": user_id, "reservation": "1"}
+        reservation_service = ReservationService()
+        return reservation_service.get_reservation_by_user_id(user_id)
 
     @handle_request()
     def get_reservation_by_book_id(self, book_id):
-        return {"book_id": book_id, "reservation": "1"}
+        reservation_service = ReservationService()
+        return reservation_service.get_reservation_by_book_id(book_id)
 
     @handle_request()
-    def update_reservation(self, user_id, book_id):
-        return {"user_id": user_id, "book_id": book_id}
+    def update_reservation(self, user_id, book_id, reservation_payload):
+        reservation_service = ReservationService()
+        return reservation_service.update_reservation(user_id=user_id, book_id=book_id, reservation_payload=reservation_payload)
 
     @handle_request()
     def delete_reservation(self, user_id, book_id):
-        return f"Reservation was deleted for {user_id} and {book_id}"
+        reservation_service = ReservationService()
+        reservation_service.delete_reservation_by_user_and_book(user_id=user_id, book_id=book_id)
+        return f"Deleted reservation for users {user_id} and book {book_id}"
 
     @handle_request()
     def delete_all_reservations_for_users(self, user_id):
-        return f"all reservations were deleted for user: {user_id}"
+        reservation_service = ReservationService()
+        number = reservation_service.delete_reservations_for_user(user_id)
+        return f"Deleted {number} of reservations for users {user_id}"
+
 
     @handle_request()
-    def delete_all_reservations_for_book(self, book_id):
-        return f"all reservations were deleted for book: {book_id}"
+    def delete_all_reservation_for_book(self, book_id):
+        reservation_service = ReservationService()
+        reservation_service.delete_reservation_for_book(book_id=book_id)
+        return f"Deleted reservation for book {book_id}"

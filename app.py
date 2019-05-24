@@ -56,7 +56,14 @@ def get_user(user_id):
 @app.route('/books', methods=['GET'])
 def get_books():
     book_api = BookApi()
-    response = book_api.get_books()
+    book_name = request.args.get("name")
+    author_name = request.args.get("author")
+    if book_name:
+        response = book_api.get_books_by_name(book_name.strip("\"\'"))
+    elif author_name:
+        response = book_api.get_books_by_author(author_name.strip("\"\'"))
+    else:
+        response = book_api.get_books()
     return app_response(response)
 
 
@@ -121,8 +128,11 @@ def get_reservation_for_book(book_id):
 
 @app.route("/reservations/user/<user_id>/book/<book_id>", methods=["PUT"])
 def update_reservation_for_user_and_book(user_id, book_id):
+    reservation = request.get_json()
     reservation_api = ReservationApi()
-    response = reservation_api.update_reservation(user_id, book_id)
+    response = reservation_api.update_reservation(user_id=user_id,
+                                                  book_id=book_id,
+                                                  reservation_payload=reservation)
     return app_response(response)
 
 
@@ -141,9 +151,9 @@ def delete_all_reservations_for_user(user_id):
 
 
 @app.route("/reservations/book/<book_id>", methods=["DELETE"])
-def delete_all_reservations_for_book(book_id):
+def delete_all_reservation_for_book(book_id):
     reservation_api = ReservationApi()
-    response = reservation_api.delete_all_reservations_for_book(book_id)
+    response = reservation_api.delete_all_reservation_for_book(book_id)
     return app_response(response)
 
 

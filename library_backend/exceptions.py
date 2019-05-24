@@ -23,6 +23,16 @@ class BookAlreadyExists(Exception):
         super().__init__(f"Book with name: {value['name']} writen by author: {value['author']} already exists")
 
 
+class ReservationAlreadyExists(Exception):
+    def __init__(self, value):
+        super().__init__(f"Reservation for user: {value['user_id']} and book: {value['book_id']} already exists")
+
+
+class ReservationIsInvalid(Exception):
+    def __init__(self, value):
+        super().__init__(f"Reservation for user: {value['user_id']} and book: {value['book_id']} is invalid")
+
+
 class RequiredFieldException(ValueError):
     def __init__(self, field_name):
         super().__init__(f"'{field_name}' is required")

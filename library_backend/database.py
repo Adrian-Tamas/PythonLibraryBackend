@@ -105,8 +105,8 @@ class SQLiteDatabaseConnection:
         return self.session.query(BooksDBModel).filter(BooksDBModel.id == book_id).one_or_none()
 
     @check_session()
-    def get_book_by_name(self, name):
-        return self.session.query(BooksDBModel).filter(BooksDBModel.name == name).all()
+    def get_book_by_partial_name(self, name):
+        return self.session.query(BooksDBModel).filter(BooksDBModel.name.ilike(f'%{name}%')).all()
 
     @check_session()
     def get_books_by_author(self, author):
@@ -161,10 +161,10 @@ class SQLiteDatabaseConnection:
         return updated_rows
 
     @check_session()
-    def update_reservation(self, user_id, book_id, reservation):
+    def update_reservation(self, reservation):
         updated_rows = self.session.query(ReservationsDBModel) \
-            .filter(ReservationsDBModel.book_id == book_id) \
-            .filter(ReservationsDBModel.user_id == user_id).update(reservation.serialize())
+            .filter(ReservationsDBModel.book_id == reservation.book_id) \
+            .filter(ReservationsDBModel.user_id == reservation.user_id).update(reservation.serialize())
         return updated_rows
 
     @check_session()
@@ -174,6 +174,20 @@ class SQLiteDatabaseConnection:
             .update({"reservation_date": reservation.reservation_date,
                      "reservation_expiration_date": reservation.reservation_expiration_date})
         return updated_rows
+
+    @check_session()
+    def get_reserved_books_by_user_id(self, user_id):
+        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel) \
+            .join(ReservationsDBModel).join(BooksDBModel)\
+            .filter(UsersDBModel.id == user_id).all()
+        return result
+
+    @check_session()
+    def get_reservation_by_book_id(self, book_id):
+        result = self.session.query(UsersDBModel, BooksDBModel, ReservationsDBModel) \
+            .join(ReservationsDBModel).join(BooksDBModel) \
+            .filter(BooksDBModel.id == book_id).all()
+        return result
 
     @check_session()
     def delete_user_by_id(self, user_id):
@@ -190,6 +204,18 @@ class SQLiteDatabaseConnection:
         deleted_rows = self.session.query(ReservationsDBModel)\
             .filter(ReservationsDBModel.book_id == book_id)\
             .filter(ReservationsDBModel.user_id == user_id).delete()
+        return deleted_rows
+
+    @check_session()
+    def delete_reservation_by_user(self, user_id):
+        deleted_rows = self.session.query(ReservationsDBModel)\
+            .filter(ReservationsDBModel.user_id == user_id).delete()
+        return deleted_rows
+
+    @check_session()
+    def delete_reservation_by_book(self, book_id):
+        deleted_rows = self.session.query(ReservationsDBModel) \
+            .filter(ReservationsDBModel.book_id == book_id).delete()
         return deleted_rows
 
     @check_session()
@@ -238,3 +264,6 @@ class SQLiteDatabaseConnection:
                 self.session.rollback()
                 self.session.close()
         self.session.close()
+
+
+
