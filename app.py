@@ -18,7 +18,7 @@ def app_response(api_response):
 
 @app.route('/users', methods=['POST'])
 def create_user():
-    user = request.get_json(Force=True)
+    user = request.get_json(force=True)
     user_api = UserApi()
     response = user_api.create_user(user)
     return app_response(response)
@@ -40,7 +40,7 @@ def delete_user(user_id):
 
 @app.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
-    new_user = request.get_json(Force=True)
+    new_user = request.get_json(force=True)
     user_api = UserApi()
     response = user_api.update_user(user_id, new_user)
     return app_response(response)
@@ -69,7 +69,7 @@ def get_books():
 
 @app.route('/books', methods=['POST'])
 def create_book():
-    book = request.get_json(Force=True)
+    book = request.get_json(force=True)
     book_api = BookApi()
     response = book_api.create_book(book)
     return app_response(response)
@@ -84,7 +84,7 @@ def get_book(book_id):
 
 @app.route('/books/<book_id>', methods=['PUT'])
 def edit_book(book_id):
-    new_book = request.get_json(Force=True)
+    new_book = request.get_json(force=True)
     book_api = BookApi()
     response = book_api.update_book(book_id, new_book)
     return app_response(response)
@@ -106,7 +106,7 @@ def get_reservations():
 
 @app.route("/reservations", methods=["POST"])
 def add_reservation():
-    reservation = request.get_json(Force=True)
+    reservation = request.get_json(force=True)
     reservation_api = ReservationApi()
     response = reservation_api.add_reservation(reservation)
     return app_response(response)
@@ -128,7 +128,7 @@ def get_reservation_for_book(book_id):
 
 @app.route("/reservations/user/<user_id>/book/<book_id>", methods=["PUT"])
 def update_reservation_for_user_and_book(user_id, book_id):
-    reservation = request.get_json(Force=True)
+    reservation = request.get_json(force=True)
     reservation_api = ReservationApi()
     response = reservation_api.update_reservation(user_id=user_id,
                                                   book_id=book_id,
