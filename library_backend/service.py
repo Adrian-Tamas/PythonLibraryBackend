@@ -147,7 +147,7 @@ class ReservationService:
 
     def add_reservation(self, reservation_payload):
         reservation = ReservationsDBModel(**reservation_payload)
-        existing_reservation = self.get_reservation_by_user_id_and_book_id(reservation.user_id, reservation.book_id)
+        existing_reservation = self._get_reservation_by_user_id_and_book_id(reservation.user_id, reservation.book_id)
         if existing_reservation:
             raise ReservationAlreadyExists(reservation_payload)
         with self.db:
@@ -178,7 +178,13 @@ class ReservationService:
                 return reservation
             except TypeError:
                 raise ResourceNotFound(resource_type="reservation", field="user_id and book_id",
-                                       value=f"{reservation.user_id} and {reservation.book_id}")
+                                       value=f"{user_id} and {book_id}")
+
+    def _get_reservation_by_user_id_and_book_id(self, user_id, book_id):
+        try:
+            return self.get_reservation_by_user_id_and_book_id(user_id=user_id, book_id=book_id)
+        except ResourceNotFound:
+            return None
 
     def get_reservation_by_user_id(self, user_id):
         reservations_list = []
@@ -226,7 +232,7 @@ class ReservationService:
             rows = self.db.update_reservation(reservation)
         if rows == 0:
             raise Exception()
-        return self.get_reservation_by_user_id_and_book_id(user_id=reservation.user_id, book_id=reservation.book_id)
+        return self._get_reservation_by_user_id_and_book_id(user_id=reservation.user_id, book_id=reservation.book_id)
 
     def delete_reservation_for_book(self, book_id):
         with self.db:
