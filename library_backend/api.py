@@ -137,6 +137,11 @@ class ReservationApi:
         return reservation_service.get_reservation_by_book_id(book_id)
 
     @handle_request()
+    def get_reservation_by_user_id_and_book_id(self, user_id, book_id):
+        reservation_service = ReservationService()
+        return reservation_service.get_reservation_by_user_id_and_book_id(user_id=user_id, book_id=book_id)
+
+    @handle_request()
     def update_reservation(self, user_id, book_id, reservation_payload):
         reservation_service = ReservationService()
         return reservation_service.update_reservation(user_id=user_id, book_id=book_id, reservation_payload=reservation_payload)
@@ -152,7 +157,6 @@ class ReservationApi:
         reservation_service = ReservationService()
         number = reservation_service.delete_reservations_for_user(user_id)
         return f"Deleted {number} of reservations for users {user_id}"
-
 
     @handle_request()
     def delete_all_reservation_for_book(self, book_id):

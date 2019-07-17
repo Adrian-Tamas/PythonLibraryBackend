@@ -126,6 +126,13 @@ def get_reservation_for_book(book_id):
     return app_response(response)
 
 
+@app.route("/reservations/user/<user_id>/book/<book_id>", methods=["GET"])
+def get_reservation_by_user_d_and_book_id(user_id, book_id):
+    reservation_api = ReservationApi()
+    response = reservation_api.get_reservation_by_user_id_and_book_id(user_id=user_id, book_id=book_id)
+    return app_response(response)
+
+
 @app.route("/reservations/user/<user_id>/book/<book_id>", methods=["PUT"])
 def update_reservation_for_user_and_book(user_id, book_id):
     reservation = request.get_json(force=True)

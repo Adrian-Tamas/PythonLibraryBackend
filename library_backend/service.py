@@ -177,7 +177,8 @@ class ReservationService:
                                }
                 return reservation
             except TypeError:
-                return None
+                raise ResourceNotFound(resource_type="reservation", field="user_id and book_id",
+                                       value=f"{reservation.user_id} and {reservation.book_id}")
 
     def get_reservation_by_user_id(self, user_id):
         reservations_list = []
