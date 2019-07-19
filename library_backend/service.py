@@ -100,7 +100,7 @@ class BookService:
         new_book_model = BooksDBModel(**new_book)
         with db:
             existing_book = db.get_book_by_author_and_name(name=new_book_model.name, author=new_book_model.author)
-            if existing_book:
+            if existing_book and not existing_book.id == book_id:
                 raise BookAlreadyExists(new_book)
             rows = db.update_book(book_id, new_book_model)
             if rows == 0:
