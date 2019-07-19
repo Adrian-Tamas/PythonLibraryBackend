@@ -234,7 +234,6 @@ class SQLiteDatabaseConnection:
         nr_of_entries = self.session.query(BooksDBModel).count()
         if nr_of_entries is 0:
             for book in books:
-                book.book_is_reserved = True
                 self.add_book(book)
 
         nr_of_entries = self.session.query(ReservationsDBModel).count()

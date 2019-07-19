@@ -12,11 +12,15 @@ class BooksDBModel(Base, SQLAlchemySerializer):
     id = Column(String, primary_key=True)
     name = Column(String)
     author = Column(String)
+    description = Column(String)
+    cover = Column(String)
 
     def __init__(self, **fields):
         self.id = fields.get("id", None)
         self.name = fields["name"]
         self.author = fields["author"]
+        self.description = fields.get("description", None)
+        self.cover = fields.get("cover", None)
 
     def __repr__(self):
         return f"{json.dumps(self.serialize())}"
