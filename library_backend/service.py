@@ -45,6 +45,7 @@ class UserService:
             rows = db.delete_user_by_id(user_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="User", field="user_id", value=user_id)
+        return f"Successfully deleted user {user_id}"
 
     def update_user(self, user_id, new_user):
         if new_user.get("id"):

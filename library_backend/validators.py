@@ -29,11 +29,11 @@ def handle_required_field(f):
 @handle_required_field
 def _validate_user_payload(body):
     regexp_email = "^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
-    if body["first_name"] is None:
+    if not body["first_name"] or body["first_name"] is None:
         raise RequiredFieldException("first_name")
-    if body["last_name"] is None:
+    if not body["last_name"] or body["last_name"]  is None:
         raise RequiredFieldException("last_name")
-    if body["email"] is None:
+    if not body["email"] or body["email"] is None:
         raise RequiredFieldException("email")
     if not re.compile(regexp_email).match(body["email"]):
         raise InvalidFieldException("email")

@@ -59,8 +59,7 @@ class UserApi:
     @handle_request()
     def delete_user(self, user_id):
         user_service = UserService()
-        user_service.delete_user(user_id)
-        return f"Successfully deleted user {user_id}"
+        return user_service.delete_user(user_id)
 
     @handle_request()
     def update_user(self, user_id, new_user):
