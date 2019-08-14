@@ -34,7 +34,7 @@ class UserService:
         with db:
             user = db.get_user_by_id(user_id)
             if not user:
-                raise ResourceNotFound(resource_type="User", field="user_id", value=user_id)
+                raise ResourceNotFound(resource_type="User", field="id", value=user_id)
             user = user.serialize()
 
         return user
@@ -44,7 +44,7 @@ class UserService:
         with db:
             rows = db.delete_user_by_id(user_id)
         if rows == 0:
-            raise ResourceNotFound(resource_type="User", field="user_id", value=user_id)
+            raise ResourceNotFound(resource_type="User", field="id", value=user_id)
         return f"Successfully deleted user {user_id}"
 
     def update_user(self, user_id, new_user):
@@ -114,6 +114,7 @@ class BookService:
             rows = db.delete_book_by_id(book_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="Book", field="id", value=book_id)
+        return f"Successfully deleted book {book_id}"
 
     def get_book_by_partial_name(self, book_name):
         db = SQLiteDatabaseConnection()

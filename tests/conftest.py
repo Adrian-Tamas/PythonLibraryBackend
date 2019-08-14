@@ -34,8 +34,7 @@ def mock_users_resource():
         "first_name": "Jane",
         "last_name": "Smith",
         "email": "janesmith@email.com"
-    }
-    ]
+    }]
 
 
 @pytest.fixture()
@@ -57,6 +56,23 @@ def mock_book_resource():
         "description": "A test book created for unit tests",
         "cover": "https://test.com/cover.jpg"
     }
+
+
+@pytest.fixture()
+def mock_books_resource():
+    yield [{
+        "id": "123",
+        "name": "My test book",
+        "author": "Unknown Author",
+        "description": "A test book created for unit tests",
+        "cover": "https://test.com/cover.jpg"
+    }, {
+        "id": "124",
+        "name": "My second test book",
+        "author": "Unknown Author",
+        "description": "A test book created for unit tests",
+        "cover": "https://test.com/cover.jpg"
+    }]
 
 
 @pytest.fixture()

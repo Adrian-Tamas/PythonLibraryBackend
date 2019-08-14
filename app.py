@@ -42,7 +42,7 @@ def delete_user(user_id):
 def update_user(user_id):
     new_user = request.get_json(force=True)
     user_api = UserApi()
-    response = user_api.update_user(user_id, new_user)
+    response = user_api.update_user(new_user=new_user, user_id=user_id)
     return app_response(response)
 
 
@@ -86,7 +86,7 @@ def get_book(book_id):
 def edit_book(book_id):
     new_book = request.get_json(force=True)
     book_api = BookApi()
-    response = book_api.update_book(book_id, new_book)
+    response = book_api.update_book(book_id=book_id, new_book=new_book)
     return app_response(response)
 
 

@@ -47,19 +47,19 @@ class TestUserService:
             user_service = UserService()
             with pytest.raises(ResourceNotFound) as exc:
                 response = user_service.get_user("123")
-        assert "User with user_id = 123 was not found" in exc.value.args[0]
+        assert "User with id = 123 was not found" in exc.value.args[0]
 
     def test_delete_user_by_id(self, mock_db_session):
-        with mock.patch("library_backend.database.SQLiteDatabaseConnection.delete_user_by_id") as mock_db_get:
-            mock_db_get.return_value = 1
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.delete_user_by_id") as mock_db_del:
+            mock_db_del.return_value = 1
             user_service = UserService()
             response = user_service.delete_user("123")
         assert "Successfully deleted user 123" == response
 
     def test_delete_user_by_invalid_id(self, mock_db_session):
-        with mock.patch("library_backend.database.SQLiteDatabaseConnection.delete_user_by_id") as mock_db_get:
-            mock_db_get.return_value = 0
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.delete_user_by_id") as mock_db_del:
+            mock_db_del.return_value = 0
             user_service = UserService()
             with pytest.raises(ResourceNotFound) as exc:
                 response = user_service.delete_user("123")
-            assert "User with user_id = 123 was not found" in exc.value.args[0]
+            assert "User with id = 123 was not found" in exc.value.args[0]
