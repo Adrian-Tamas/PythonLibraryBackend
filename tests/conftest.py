@@ -75,7 +75,7 @@ def mock_books_resource():
     }]
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def mock_db_session():
     with mock.patch('library_backend.database.create_engine'):
         with mock.patch('library_backend.database.sessionmaker') as sessionmaker_mock:

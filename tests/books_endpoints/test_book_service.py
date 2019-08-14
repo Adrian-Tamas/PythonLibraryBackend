@@ -1,3 +1,5 @@
+import copy
+
 import mock
 import pytest
 
@@ -64,3 +66,32 @@ class TestBookService:
             with pytest.raises(ResourceNotFound) as exc:
                 response = book_service.delete_book(mock_book_resource["id"])
             assert "Book with id = 123 was not found" in exc.value.args[0]
+
+    def test_edit_book_valid(self, mock_db_session, mock_book_resource):
+        edit_book_payload = copy.deepcopy(mock_book_resource)
+        edit_book_payload["name"] = "Edited book title"
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_book_by_id") as mock_db_get:
+            mock_db_get.side_effect = [BooksDBModel(**mock_book_resource), BooksDBModel(**edit_book_payload)]
+            book_service = BookService()
+            response = book_service.edit_book(edit_book_payload["id"], edit_book_payload)
+        assert edit_book_payload == response
+
+    def test_edit_book_invalid_id(self, mock_db_session, mock_book_resource):
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_book_by_id") as mock_db_get:
+            mock_db_get.return_value = None
+            book_service = BookService()
+            with pytest.raises(ResourceNotFound) as exc:
+                response = book_service.edit_book(mock_book_resource["id"], mock_book_resource)
+            assert f"Book with id = {mock_book_resource['id']} was not found" in exc.value.args[0]
+
+    def test_edit_book_invalid_book_already_exists(self, mock_db_session, mock_book_resource):
+        edit_book_payload = copy.deepcopy(mock_book_resource)
+        edit_book_payload["name"] = "Edited book title"
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_book_by_id", return_value=BooksDBModel(**mock_book_resource)):
+            with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_book_by_author_and_name") as mock_db_get:
+                mock_db_get.return_value = BooksDBModel(**edit_book_payload)
+                book_service = BookService()
+                with pytest.raises(BookAlreadyExists) as exc:
+                    response = book_service.edit_book(mock_book_resource["id"], mock_book_resource)
+                assert f"Book with name: {mock_book_resource['name']} writen by author: {mock_book_resource['author']} already exists" in exc.value.args[0]
+                # TODO: fix this

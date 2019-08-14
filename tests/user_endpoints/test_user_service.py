@@ -1,7 +1,9 @@
+import copy
+
 import mock
 import pytest
 
-from library_backend.exceptions import UserAlreadyExists, ResourceNotFound
+from library_backend.exceptions import UserAlreadyExists, ResourceNotFound, InvalidFieldException
 from library_backend.service import UserService, UsersDBModel
 
 
@@ -63,3 +65,30 @@ class TestUserService:
             with pytest.raises(ResourceNotFound) as exc:
                 response = user_service.delete_user("123")
             assert "User with id = 123 was not found" in exc.value.args[0]
+
+    def test_edit_user_valid(self, mock_db_session, mock_user_resource):
+        edited_user_payload = copy.deepcopy(mock_user_resource)
+        edited_user_payload["first_name"] = "Jane"
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_user_by_id") as mock_db_get:
+            mock_db_get.side_effect = [UsersDBModel(**mock_user_resource), UsersDBModel(**edited_user_payload)]
+            user_service = UserService()
+            response = user_service.update_user(mock_user_resource["id"], edited_user_payload)
+        assert edited_user_payload == response
+
+    def test_edit_user_invalid_id(self, mock_db_session, mock_user_resource):
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_user_by_id") as mock_db_get:
+            mock_db_get.return_value = None
+            user_service = UserService()
+            with pytest.raises(ResourceNotFound) as exc:
+                response = user_service.update_user(mock_user_resource["id"], mock_user_resource)
+            assert f"User with id = {mock_user_resource['id']} was not found" in exc.value.args[0]
+
+    def test_edit_user_invalid_email_change(self, mock_db_session, mock_user_resource):
+        edited_user_payload = copy.deepcopy(mock_user_resource)
+        edited_user_payload["email"] = "Jane@email.com"
+        with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_user_by_id") as mock_db_get:
+            mock_db_get.return_value = UsersDBModel(**mock_user_resource)
+            user_service = UserService()
+            with pytest.raises(InvalidFieldException) as exc:
+                response = user_service.update_user(mock_user_resource["id"], edited_user_payload)
+            assert f"'email' is invalid" in exc.value.args[0]

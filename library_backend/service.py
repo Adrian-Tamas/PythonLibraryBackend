@@ -48,13 +48,12 @@ class UserService:
         return f"Successfully deleted user {user_id}"
 
     def update_user(self, user_id, new_user):
-        if new_user.get("id"):
-            del new_user["id"]
         old_user = self.get_user(user_id)
+        new_user["id"] = old_user["id"]
         if not old_user["email"] == new_user["email"]:
             raise InvalidFieldException("email")
         db = SQLiteDatabaseConnection()
-        user_model = UsersDBModel(id=user_id, **new_user)
+        user_model = UsersDBModel(**new_user)
         with db:
             rows = db.update_user(user_id, user_model)
         user = self.get_user(user_id)
