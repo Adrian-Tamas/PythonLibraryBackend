@@ -6,7 +6,7 @@ from library_backend.service import (UserService,
                                      BookService,
                                      ReservationService)
 from library_backend.validators import (validate_request_for_user,
-                                        validate_request_for_book)
+                                        validate_request_for_book, validate_request_for_reservation)
 
 
 def response(message, status_code):
@@ -38,6 +38,8 @@ def handle_request():
                 return response(str(e), 400)
             except KeyError as e:
                 return response(f'{str(e)} is required', 400)
+            except DatabaseCommunicationIssue as e:
+                return response(str(e), 500)
 
         return wrapper
 
@@ -125,6 +127,7 @@ class ReservationApi:
         return reservation_service.list_reservations()
 
     @handle_request()
+    @validate_request_for_reservation
     def add_reservation(self, reservation):
         reservation_service = ReservationService()
         return reservation_service.add_reservation(reservation)
@@ -145,9 +148,12 @@ class ReservationApi:
         return reservation_service.get_reservation_by_user_id_and_book_id(user_id=user_id, book_id=book_id)
 
     @handle_request()
-    def update_reservation(self, user_id, book_id, reservation_payload):
+    @validate_request_for_reservation
+    def update_reservation(self, reservation_payload, user_id, book_id):
         reservation_service = ReservationService()
-        return reservation_service.update_reservation(user_id=user_id, book_id=book_id, reservation_payload=reservation_payload)
+        return reservation_service.update_reservation(user_id=user_id,
+                                                      book_id=book_id,
+                                                      reservation_payload=reservation_payload)
 
     @handle_request()
     def delete_reservation(self, user_id, book_id):
@@ -159,7 +165,7 @@ class ReservationApi:
     def delete_all_reservations_for_users(self, user_id):
         reservation_service = ReservationService()
         number = reservation_service.delete_reservations_for_user(user_id)
-        return f"Deleted {number} of reservations for users {user_id}"
+        return f"Deleted {number} reservations for users {user_id}"
 
     @handle_request()
     def delete_all_reservation_for_book(self, book_id):

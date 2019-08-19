@@ -31,6 +31,19 @@ def validate_request_for_book(func):
     return func_wrapper
 
 
+def validate_request_for_reservation(func):
+    params = list(signature(func).parameters)
+    second_argname = params[1]
+
+    def func_wrapper(*args, **kwargs):
+        payload = (kwargs[second_argname]
+                   if second_argname in kwargs else args[1])
+        _validate_reservation_payload(payload)
+        return func(*args, **kwargs)
+
+    return func_wrapper
+
+
 def handle_required_field(f):
     """
     Handle KeyError exceptions
@@ -65,3 +78,13 @@ def _validate_book_payload(body):
         raise RequiredFieldException("name")
     if not body["author"] or body["author"] is None:
         raise RequiredFieldException("author")
+
+
+@handle_required_field
+def _validate_reservation_payload(body):
+    if not body["user_id"] or body["user_id"] is None:
+        raise RequiredFieldException("user_id")
+    if not body["book_id"] or body["book_id"] is None:
+        raise RequiredFieldException("book_id")
+    if not body["reservation_date"] or body["reservation_date"] is None:
+        raise RequiredFieldException("reservation_date")

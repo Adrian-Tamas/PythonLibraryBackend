@@ -127,7 +127,7 @@ def get_reservation_for_book(book_id):
 
 
 @app.route("/reservations/user/<user_id>/book/<book_id>", methods=["GET"])
-def get_reservation_by_user_d_and_book_id(user_id, book_id):
+def get_reservation_by_user_id_and_book_id(user_id, book_id):
     reservation_api = ReservationApi()
     response = reservation_api.get_reservation_by_user_id_and_book_id(user_id=user_id, book_id=book_id)
     return app_response(response)
@@ -158,7 +158,7 @@ def delete_all_reservations_for_user(user_id):
 
 
 @app.route("/reservations/book/<book_id>", methods=["DELETE"])
-def delete_all_reservation_for_book(book_id):
+def delete_all_reservations_for_book(book_id):
     reservation_api = ReservationApi()
     response = reservation_api.delete_all_reservation_for_book(book_id)
     return app_response(response)

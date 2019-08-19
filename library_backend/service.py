@@ -4,7 +4,7 @@ from library_backend.exceptions import (UserAlreadyExists,
                                         InvalidFieldException,
                                         BookAlreadyExists,
                                         ReservationAlreadyExists,
-                                        ReservationIsInvalid)
+                                        ReservationIsInvalid, DatabaseCommunicationIssue)
 from library_backend.models.database.books_db_model import BooksDBModel
 from library_backend.models.database.reservations_db_model import ReservationsDBModel
 from library_backend.models.database.users_db_model import *
@@ -58,7 +58,7 @@ class UserService:
             rows = db.update_user(user_id, user_model)
         user = self.get_user(user_id)
         if rows == 0:
-            raise Exception
+            raise DatabaseCommunicationIssue("update user")
         return user
 
 
@@ -104,7 +104,7 @@ class BookService:
                 raise BookAlreadyExists(new_book)
             rows = db.update_book(book_id, new_book_model)
             if rows == 0:
-                raise Exception
+                raise DatabaseCommunicationIssue("update book")
         return self.get_book(book_id)
 
     def delete_book(self, book_id):
@@ -232,7 +232,7 @@ class ReservationService:
         with self.db:
             rows = self.db.update_reservation(reservation)
         if rows == 0:
-            raise Exception()
+            raise DatabaseCommunicationIssue("update reservation")
         return self._get_reservation_by_user_id_and_book_id(user_id=reservation.user_id, book_id=reservation.book_id)
 
     def delete_reservation_for_book(self, book_id):

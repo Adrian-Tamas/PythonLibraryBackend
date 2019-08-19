@@ -48,6 +48,11 @@ class RequiredCharactersLengthException(ValueError):
         super().__init__(f"'{field_name}' must be between {min} and {max} characters")
 
 
+class DatabaseCommunicationIssue(Exception):
+    def __init__(self, action):
+        super().__init__(f"There was an error performing the {action}")
+
+
 class AlphanumericException(ValueError):
     def __init__(self, field_name):
         super().__init__(f"'{field_name}' is invalid, it must contain only alphanumeric characters")

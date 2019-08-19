@@ -87,6 +87,7 @@ class TestBookService:
     def test_edit_book_invalid_book_already_exists(self, mock_db_session, mock_book_resource):
         edit_book_payload = copy.deepcopy(mock_book_resource)
         edit_book_payload["name"] = "Edited book title"
+        edit_book_payload["id"] = "456"
         with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_book_by_id", return_value=BooksDBModel(**mock_book_resource)):
             with mock.patch("library_backend.database.SQLiteDatabaseConnection.get_book_by_author_and_name") as mock_db_get:
                 mock_db_get.return_value = BooksDBModel(**edit_book_payload)
@@ -94,4 +95,3 @@ class TestBookService:
                 with pytest.raises(BookAlreadyExists) as exc:
                     response = book_service.edit_book(mock_book_resource["id"], mock_book_resource)
                 assert f"Book with name: {mock_book_resource['name']} writen by author: {mock_book_resource['author']} already exists" in exc.value.args[0]
-                # TODO: fix this
