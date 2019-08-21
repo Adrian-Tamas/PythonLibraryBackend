@@ -153,18 +153,18 @@ class ReservationService:
             raise ReservationAlreadyExists(reservation_payload)
         with self.db:
             self.db.add_reservation(reservation)
-            user, book, reservation = self.db.get_reserved_book_by_user_id_and_book_id(user_id=reservation.user_id,
-                                                                                       book_id=reservation.book_id)
-            reservation_details = {"user": user.serialize(),
-                                   "book": book.serialize(),
-                                   "reservation_date": reservation.reservation_date,
-                                   "reservation_expiration_date": reservation.reservation_expiration_date
-                                   }
-        if reservation_details:
-            return reservation_details
-        else:
-            raise ResourceNotFound(resource_type="reservation", field="user_id and book_id",
-                                   value=f"{reservation.user_id} and {reservation.book_id}")
+            try:
+                user, book, reservation = self.db.get_reserved_book_by_user_id_and_book_id(user_id=reservation.user_id,
+                                                                                           book_id=reservation.book_id)
+                reservation_details = {"user": user.serialize(),
+                                       "book": book.serialize(),
+                                       "reservation_date": reservation.reservation_date,
+                                       "reservation_expiration_date": reservation.reservation_expiration_date
+                                       }
+                return reservation_details
+            except TypeError:
+                raise ResourceNotFound(resource_type="Reservation", field="(user_id, book_id)",
+                                       value=(reservation_payload['user_id'], reservation_payload['book_id']))
 
     def get_reservation_by_user_id_and_book_id(self, user_id, book_id):
         with self.db:
@@ -178,8 +178,8 @@ class ReservationService:
                                }
                 return reservation
             except TypeError:
-                raise ResourceNotFound(resource_type="reservation", field="user_id and book_id",
-                                       value=f"{user_id} and {book_id}")
+                raise ResourceNotFound(resource_type="Reservation",
+                                       field="(user_id, book_id)", value=(user_id, book_id))
 
     def _get_reservation_by_user_id_and_book_id(self, user_id, book_id):
         try:
@@ -216,14 +216,14 @@ class ReservationService:
             rows = self.db.delete_reservation_by_user(user_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="Reservation", field="user_id", value=user_id)
-        return rows
+        return f"Deleted {rows} reservations for users {user_id}"
 
     def delete_reservation_by_user_and_book(self, user_id, book_id):
         with self.db:
             rows = self.db.delete_reservation_by_user_and_book_id(user_id=user_id, book_id=book_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="Reservation", field="(user_id, book_id)", value=(user_id, book_id))
-        return rows
+        return f"Deleted reservation for users {user_id} and book {book_id}"
 
     def update_reservation(self, user_id, book_id, reservation_payload):
         reservation = ReservationsDBModel(**reservation_payload)
@@ -240,4 +240,4 @@ class ReservationService:
             rows = self.db.delete_reservation_by_book(book_id=book_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="Reservation", field="book_id", value=book_id)
-        return rows
+        return f"Deleted reservation for book {book_id}"

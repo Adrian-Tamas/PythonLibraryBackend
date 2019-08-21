@@ -30,7 +30,7 @@ def mock_users_resource():
         "last_name": "Smith",
         "email": "jhonsmith@email.com"
     }, {
-        "id": "124",
+        "id": "456",
         "first_name": "Jane",
         "last_name": "Smith",
         "email": "janesmith@email.com"
@@ -67,7 +67,7 @@ def mock_books_resource():
         "description": "A test book created for unit tests",
         "cover": "https://test.com/cover.jpg"
     }, {
-        "id": "124",
+        "id": "456",
         "name": "My second test book",
         "author": "Unknown Author",
         "description": "A test book created for unit tests",

@@ -199,7 +199,8 @@ class TestLibraryBackendAppReservationsEndpoints:
 
     def test_reservation_delete_by_user_and_book_id_valid(self, mock_reservation_resource):
         with patch('library_backend.service.ReservationService.delete_reservation_by_user_and_book') as test_mock:
-            test_mock.return_value = 1
+            test_mock.return_value = f"Deleted reservation for users {mock_reservation_resource['user']['id']}" \
+                f" and book {mock_reservation_resource['book']['id']}"
             endpoint_url = f'/reservations/user/{mock_reservation_resource["user"]["id"]}' \
                 f'/book/{mock_reservation_resource["book"]["id"]}'
             with app.app.test_request_context(endpoint_url, method="DELETE"):
@@ -225,7 +226,8 @@ class TestLibraryBackendAppReservationsEndpoints:
 
     def test_reservation_delete_by_user_id_valid(self, mock_reservation_resource):
         with patch('library_backend.service.ReservationService.delete_reservations_for_user') as test_mock:
-            test_mock.return_value = 3
+            test_mock.return_value = f'Deleted 3 reservations for users ' \
+                   f'{mock_reservation_resource["user"]["id"]}'
             endpoint_url = f"/reservations/user/{mock_reservation_resource['user']['id']}"
             with app.app.test_request_context(endpoint_url, method="DELETE"):
                 response = app.delete_all_reservations_for_user(user_id=mock_reservation_resource["user"]["id"])
@@ -247,7 +249,8 @@ class TestLibraryBackendAppReservationsEndpoints:
 
     def test_reservation_delete_by_book_id_valid(self, mock_reservation_resource):
         with patch('library_backend.service.ReservationService.delete_reservation_for_book') as test_mock:
-            test_mock.return_value = 1
+            test_mock.return_value = f'Deleted reservation for book ' \
+                   f'{mock_reservation_resource["book"]["id"]}'
             endpoint_url = f"/reservations/book/{mock_reservation_resource['book']['id']}"
             with app.app.test_request_context(endpoint_url, method="DELETE"):
                 response = app.delete_all_reservations_for_book(book_id=mock_reservation_resource["book"]["id"])
