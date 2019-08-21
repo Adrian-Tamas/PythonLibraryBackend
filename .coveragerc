@@ -1,0 +1,12 @@
+[report]
+omit =
+    # omit anything in the tests directory anywhere
+    */tests/*
+    # omit this single file
+    trial.py
+    library_backend\database.py
+    library_backend\models\database\mock_data.py
+
+include =
+    # includes everything in the directory anywhere
+    */library_backend/*
