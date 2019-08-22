@@ -1,6 +1,7 @@
 from unittest import mock
 
 import pytest
+import app
 
 
 @pytest.fixture()

@@ -1,12 +1,21 @@
 import json
 from functools import wraps
 
+from flask import Response
+
 from library_backend.exceptions import *
 from library_backend.service import (UserService,
                                      BookService,
                                      ReservationService)
 from library_backend.validators import (validate_request_for_user,
                                         validate_request_for_book, validate_request_for_reservation)
+
+
+CONTENT_TYPE = "application/json"
+
+
+def app_response(api_response):
+    return Response(response=api_response['body'], status=api_response['status_code'], content_type=CONTENT_TYPE)
 
 
 def response(message, status_code):
