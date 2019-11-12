@@ -1,11 +1,19 @@
 # Description
 A basic backend service for a simple library app to be used for learning RestApi automation testing
 
+# Requirements for running the application
+* python 3.6 - https://www.python.org/downloads/release/python-360/
+* pip - https://www.liquidweb.com/kb/install-pip-windows/
+
 # Running the application
 * clone the repository
 * install requirements: _pip install -r requirements.txt_
 * run the app.py file: _python app.py_
 * do requests to http://127.0.0.1:50000
+
+# Reset the database and re-add generic data
+* remove/delete the db.sqlite file
+* run the app.py script again - it will recreate the database and init some test data
 
 # Functionality
 * the app exposes endpoints for users, books, reservations
