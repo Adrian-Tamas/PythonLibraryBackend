@@ -147,6 +147,10 @@ class ReservationService:
         return reservations_list
 
     def add_reservation(self, reservation_payload):
+        try:
+            self._validate_reservation_payload(reservation_payload)
+        except Exception as e:
+            raise e
         reservation = ReservationsDBModel(**reservation_payload)
         existing_reservation = self._get_reservation_by_user_id_and_book_id(reservation.user_id, reservation.book_id)
         if existing_reservation:
@@ -216,14 +220,14 @@ class ReservationService:
             rows = self.db.delete_reservation_by_user(user_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="Reservation", field="user_id", value=user_id)
-        return f"Deleted {rows} reservations for users {user_id}"
+        return f"Deleted {rows} reservations for user {user_id}"
 
     def delete_reservation_by_user_and_book(self, user_id, book_id):
         with self.db:
             rows = self.db.delete_reservation_by_user_and_book_id(user_id=user_id, book_id=book_id)
         if rows == 0:
             raise ResourceNotFound(resource_type="Reservation", field="(user_id, book_id)", value=(user_id, book_id))
-        return f"Deleted reservation for users {user_id} and book {book_id}"
+        return f"Deleted reservation for user {user_id} and book {book_id}"
 
     def update_reservation(self, user_id, book_id, reservation_payload):
         reservation = ReservationsDBModel(**reservation_payload)
@@ -241,3 +245,13 @@ class ReservationService:
         if rows == 0:
             raise ResourceNotFound(resource_type="Reservation", field="book_id", value=book_id)
         return f"Deleted reservation for book {book_id}"
+
+    def _validate_reservation_payload(self, reservation_payload):
+        reservation = ReservationsDBModel(**reservation_payload)
+        with self.db:
+            rows = self.db.get_book_by_id(reservation.book_id)
+            if not rows:
+                raise ResourceNotFound(resource_type="Book", field="book_id", value=reservation.book_id)
+            rows = self.db.get_user_by_id(reservation.user_id)
+            if not rows:
+                raise ResourceNotFound(resource_type="User", field="user_id", value=reservation.user_id)

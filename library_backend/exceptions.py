@@ -20,7 +20,7 @@ class InvalidBook(Exception):
 
 class BookAlreadyExists(Exception):
     def __init__(self, value):
-        super().__init__(f"Book with name: {value['name']} writen by author: {value['author']} already exists")
+        super().__init__(f"Book with name: {value['name']} written by author: {value['author']} already exists")
 
 
 class ReservationAlreadyExists(Exception):
