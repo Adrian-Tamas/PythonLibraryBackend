@@ -1,4 +1,4 @@
 flask
-sqlalchemy
+sqlalchemy==1.3.22
 faker
 pytest

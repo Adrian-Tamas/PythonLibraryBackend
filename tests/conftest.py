@@ -1,7 +1,7 @@
 from unittest import mock
 
 import pytest
-import app
+import back_end
 
 
 @pytest.fixture()
