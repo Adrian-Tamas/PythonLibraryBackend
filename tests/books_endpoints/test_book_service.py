@@ -1,7 +1,8 @@
 import copy
 
-import mock
 import pytest
+
+from unittest import mock
 
 from library_backend.exceptions import BookAlreadyExists, ResourceNotFound
 from library_backend.service import BookService, BooksDBModel
