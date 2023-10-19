@@ -4,6 +4,7 @@ from datetime import date
 from functools import wraps
 from faker import Faker
 from sqlalchemy import create_engine
+from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from library_backend import logger, Base
@@ -46,9 +47,9 @@ class SQLiteDatabaseConnection:
     @check_session()
     def create_tables_if_not_exists(self):
         try:
-            if not (self.engine.dialect.has_table(self.engine, UsersDBModel.__tablename__)
-                    and self.engine.dialect.has_table(self.engine, BooksDBModel.__tablename__)
-                    and self.engine.dialect.has_table(self.engine, ReservationsDBModel.__tablename__)):
+            if not (inspect(self.engine).has_table(UsersDBModel.__tablename__)
+                    and inspect(self.engine).has_table(BooksDBModel.__tablename__)
+                    and inspect(self.engine).has_table(ReservationsDBModel.__tablename__)):
                 logger.info(f"Creating table {UsersDBModel.__tablename__}...")
                 try:
                     Base.metadata.create_all(self.engine)
