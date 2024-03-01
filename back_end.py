@@ -21,4 +21,4 @@ if __name__ == '__main__':
         db.create_tables_if_not_exists()
     with db:
         db.add_some_data_if_does_not_exist()
-    app.run(host="127.0.0.1", port=50000, debug="True")
+    app.run(host="127.0.0.1", port=50000, debug=True)
